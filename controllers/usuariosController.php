@@ -23,6 +23,13 @@ if (isset($_POST['action'])) {
 if($action == 'seleccionar') {
     $data["status"] = 200;
     $data["result"] = getAllUsers();
+    echo json_encode($data);
+}
+
+if($action == 'listar_email') {
+    $email = $_POST["email"];
+    $data["result"] = getUserByEmail($email);
+    echo json_encode($data);
 }
 
 if ($action === 'registrar' && isAdmin()) {

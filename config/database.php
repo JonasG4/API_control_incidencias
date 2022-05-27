@@ -6,7 +6,7 @@ function connect()
     $database = [
         "server" => 'localhost',
         "username" => 'root',
-        "password" => '',
+        "password" => 'cSL>zq#z',
         "db_name" => 'dbsys_incidencias'
     ];
 

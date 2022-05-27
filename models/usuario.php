@@ -28,15 +28,43 @@ function getAllUsers() //1
 
       $row[] = $jsonRow;
     }
+    return array_values($row);
+  }else {
+    $row =  "No hay registros";
+    return $row;
   }
-
   disconnect($conn);
-
-  return array_values($row);
 }
 
 function getUserByEmail($email) //2
 {
+    $conn = connect();
+    $search_email = "SELECT * FROM usuarios WHERE email = '$email'";
+    $query = mysqli_query($conn, $search_email);
+    $nRow = mysqli_num_rows($query);
+    if ($nRow != 0) {
+        while ($Usuarios = mysqli_fetch_array($query)) {
+            $jsonRow = array();
+            $id_usuario = $Usuarios["id_usuario"];
+            $nombre = $Usuarios["nombre"];
+            $apellido = $Usuarios["apellido"];
+            $email = $Usuarios["email"];
+            $id_rol = $Usuarios["id_rol"];
+            $jsonRow["id_usuario"] = $id_usuario;
+            $jsonRow["nombre"] = $nombre;
+            $jsonRow["apellido"] = $apellido;
+            $jsonRow["email"] = $email;
+            $jsonRow["id_rol"] = $id_rol;
+            $row[] = $jsonRow;
+        }
+        return array_values($row);
+    }else {
+        header('HTTP/1.O 400 Bad Request');
+        $row =  "Email no encontrado";
+        return $row;
+    }
+
+    disconnect($conn);
 }
 
 function addUser($usuario)
