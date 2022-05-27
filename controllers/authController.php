@@ -13,3 +13,6 @@ if($action === 'login'){
 
 }
 
+if($action === 'logout'){
+    
+}
