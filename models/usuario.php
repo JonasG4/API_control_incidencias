@@ -49,6 +49,17 @@ function updateUser($usuario)
 
 function deleteUser($id) //5
 {
+    $conn = connect();
+
+    $query = "UPDATE usuarios SET nombre='$name',
+     apellido='$lastname',email='$email', id_rol='$id_rol'  WHERE id_usuario='$id_usuario'";
+    if (mysqli_query($conn, $query)) {
+        $state = 1;
+    } else {
+        $state = "Error: " . mysqli_error($conn);
+    }
+    disconnect($conn);
+    return $state;
 }
 
 function filterUsers($filter) //6
