@@ -15,9 +15,22 @@ $action = '';
 if (isset($_POST['action'])) {
     $action = strtolower($_POST['action']);
 }
-
-
 // ========== ACCIONES ============================= 
+
+//Obtener todos los usuarios
+if($action == 'seleccionar') {
+    $data["status"] = 200;
+    $data["result"] = getAllUsers();
+    echo json_encode($data);
+}
+
+//Obtener usuario por email
+if($action == 'listar_email') {
+    $email = $_POST["email"];
+    $data["result"] = getUserByEmail($email);
+    echo json_encode($data);
+}
+
 // REGISTAR UN USUARIO
 if ($action === 'registrar' && isAdmin()) {
 
@@ -146,7 +159,7 @@ if ($action === 'eliminar' && isAuth()) {
     echo json_encode($data);
 }
 
-if ($action === 'search' && isAuth()) {
+if ($action === 'buscar' && isAuth()) {
     $filter =  trim($_POST['filter']);
 
     try {
