@@ -2,27 +2,30 @@
 //CONFIG DATABASE
 require_once('../config/database.php');
 
-function getAllUsers()
+function getAllUsers() //1
 {
-    return 'hola';
+
 }
 
-function getUserByEmail($email)
-{
-}
-
-function addUser($user)
+function getUserByEmail($email) //2
 {
 }
 
-function updateUser($user)
+function addUser($user) 
+{
+
+}
+
+function updateUser($user) 
+{
+
+}
+
+function deleteUser($id) //5
 {
 }
 
-function deleteUser($id)
+function filterUsers($filter) //6
 {
-}
 
-function filterUsers($filter)
-{
 }

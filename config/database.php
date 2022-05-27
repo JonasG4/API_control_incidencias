@@ -7,7 +7,7 @@ function connect()
         "server" => 'localhost',
         "username" => 'root',
         "password" => '',
-        "db_name" => 'dbsys_incidencias00'
+        "db_name" => 'dbsys_incidencias'
     ];
 
     $conn = mysqli_connect($database['server'], $database['username'], $database['password'], $database['db_name']);
