@@ -47,19 +47,19 @@ function updateUser($usuario)
     return true;
 }
 
-function deleteUser($id) //5
+function deleteUser($id_usuario) //5
 {
     $conn = connect();
-
-    $query = "UPDATE usuarios SET nombre='$name',
-     apellido='$lastname',email='$email', id_rol='$id_rol'  WHERE id_usuario='$id_usuario'";
-    if (mysqli_query($conn, $query)) {
-        $state = 1;
-    } else {
-        $state = "Error: " . mysqli_error($conn);
+    $query = "DELETE FROM usuarios WHERE id_usuario='$id_usuario'";
+    try {
+        mysqli_query($conn, $query);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        return false;
     }
+
     disconnect($conn);
-    return $state;
+    return true;
 }
 
 function filterUsers($filter) //6
