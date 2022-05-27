@@ -102,5 +102,3 @@ function deleteContact($id_contact)
     disconnect($conn);
     return $state;
 }
-
-?>
