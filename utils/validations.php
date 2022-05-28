@@ -88,7 +88,7 @@ function usuarioDeleteValidation($id_usuario)
 {
     $errors = [];
 
-    $isUserExists = (array) getUserById($id_usuario); 
+    $isUserExists = (array) getUserById($id_usuario);
 
     if (count($isUserExists) < 1) {
         $errors = [
@@ -99,3 +99,21 @@ function usuarioDeleteValidation($id_usuario)
     return $errors;
 }
 
+function loginValidation($credenciales)
+{
+    $errors = [];
+    $email = trim($credenciales['email']);
+    $password = trim($credenciales['password']);
+
+
+    if (!isEmailExist($email)) {
+        $errors['email'] = 'El correo electrónico no está registrado';
+    } else {
+        $usuario = getUserByEmail($email);
+        if (!password_verify($password, $usuario[0]['password'])) {
+            $errors['password'] = 'El correo electrónico o la contraseña son incorrectos';
+        }
+    }
+
+    return $errors;
+}

@@ -49,11 +49,13 @@ function getUserByEmail($email) //2
             $nombre = $Usuarios["nombre"];
             $apellido = $Usuarios["apellido"];
             $email = $Usuarios["email"];
+            $password = $Usuarios['password'];
             $id_rol = $Usuarios["id_rol"];
             $jsonRow["id_usuario"] = $id_usuario;
             $jsonRow["nombre"] = $nombre;
             $jsonRow["apellido"] = $apellido;
             $jsonRow["email"] = $email;
+            $jsonRow["password"] = $password;
             $jsonRow["id_rol"] = $id_rol;
             $row[] = $jsonRow;
         }
