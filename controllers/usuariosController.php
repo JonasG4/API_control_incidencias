@@ -75,7 +75,6 @@ if ($action === 'registrar' && isAdmin()) {
 
 // MODIFICAR UN USUARIO
 if ($action === 'modificar' && isAuth()) {
-
     if (isset($_POST['id_usuario'])) {
         $usuario = [
             'id_usuario' => trim($_POST['id_usuario']),

@@ -186,5 +186,5 @@ function getUserById($id)
     }
 
     disconnect($conn);
-    return (object) $result;
+    return $result;
 }
