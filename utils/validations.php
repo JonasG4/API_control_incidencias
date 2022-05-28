@@ -57,7 +57,7 @@ function usuarioUpdateValidation($usuario)
     $apellido = trim($usuario['apellido']);
     $newEmail = trim($usuario['email']);
 
-    $currentEmail = getUserById($id_usuario)->email;
+    $currentEmail = getUserById($id_usuario)['email'];
     if (isset($currentEmail)) {
         //Validar campo nombre
         if (strlen($nombre) < 3) {

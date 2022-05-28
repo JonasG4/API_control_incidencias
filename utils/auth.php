@@ -8,6 +8,8 @@ use Firebase\JWT\Key;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\SignatureInvalidException;
 
+$data = [];
+
 function isAdmin()
 {
    if (!empty($_SERVER["HTTP_AUTHORIZATION"])) {
@@ -20,21 +22,45 @@ function isAdmin()
             return true;
          } else {
             header('HTTP/1.O 401 Unauthorized');
-            echo "No tienes permiso de acceder a este recurso.";
+            $data =
+               [
+                  'state' => 'error',
+                  'title' => 'Unauthorized',
+                  'msg' => 'No tienes permiso de acceder a este recurso.'
+               ];
+            echo json_encode($data);
             return false;
          }
       } catch (SignatureInvalidException $e) {
          header('HTTP/1.O 400 Bad Request');
-         echo "Acceso denegado. El token no es válido";
+         $data =
+            [
+               'state' => 'error',
+               'title' => 'Unauthorized',
+               'msg' => 'Acceso denegado. El token no es válido.'
+            ];
+         echo json_encode($data);
          return false;
       } catch (ExpiredException $e) {
          header('HTTP/1.O 400 Bad Request');
-         echo "El token ha caducado. Vuelva a iniciar sesión";
+         $data =
+            [
+               'state' => 'error',
+               'title' => 'Unauthorized',
+               'msg' => 'El token ha caducado. Vuelva a iniciar sesión.'
+            ];
+         echo json_encode($data);
          return false;
       }
    } else {
       header('HTTP/1.O 400 Bad Request');
-      echo 'No se ha proporcionado un token en la petición';
+      $data =
+         [
+            'state' => 'error',
+            'title' => 'Unauthorized',
+            'msg' => 'No se ha proporcionado un token en la petición.'
+         ];
+      echo json_encode($data);
       return false;
    }
 }
@@ -49,16 +75,34 @@ function isAuth()
          if (JWT::decode($token, new Key($key, $algorithm))) return true;
       } catch (SignatureInvalidException $e) {
          header('HTTP/1.O 400 Bad Request');
-         echo "Acceso denegado. El token no es válido";
+         $data =
+            [
+               'state' => 'error',
+               'title' => 'Unauthorized',
+               'msg' => 'Acceso denegado. El token no es válido.'
+            ];
+         echo json_encode($data);
          return false;
       } catch (ExpiredException $e) {
          header('HTTP/1.O 400 Bad Request');
-         echo "El token ha caducado. Vuelva a iniciar sesión";
+         $data =
+            [
+               'state' => 'error',
+               'title' => 'Unauthorized',
+               'msg' => 'El token ha caducado. Vuelva a iniciar sesión.'
+            ];
+         echo json_encode($data);
          return false;
       }
    } else {
       header('HTTP/1.O 400 Bad Request');
-      echo 'No se ha proporcionado un token en la petición';
+      $data =
+         [
+            'state' => 'error',
+            'title' => 'Unauthorized',
+            'msg' => 'No se ha proporcionado un token en la petición.'
+         ];
+      echo json_encode($data);
       return false;
    }
 }
@@ -79,10 +123,11 @@ function generateToken($data)
    return $token;
 }
 
-function decodeToken($token){
+function decodeToken($token)
+{
    $key = JWTConfig()->secret;
    $algorithm = JWTConfig()->algorithm;
    $data = JWT::decode($token, new Key($key, $algorithm));
 
-  return $data;
+   return $data;
 }
