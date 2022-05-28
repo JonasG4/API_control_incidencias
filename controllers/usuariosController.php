@@ -18,14 +18,14 @@ if (isset($_POST['action'])) {
 // ========== ACCIONES ============================= 
 
 //Obtener todos los usuarios
-if($action == 'seleccionar') {
+if ($action == 'seleccionar') {
     $data["status"] = 200;
     $data["result"] = getAllUsers();
     echo json_encode($data);
 }
 
 //Obtener usuario por email
-if($action == 'listar_email') {
+if ($action == 'listar_email') {
     $email = $_POST["email"];
     $data["result"] = getUserByEmail($email);
     echo json_encode($data);
@@ -46,6 +46,7 @@ if ($action === 'registrar' && isAdmin()) {
     if (count($errors)) {
         header('HTTP/1.O 400 Bad Request');
         $data = [
+            'state' => 'error',
             'title' => 'Errores de validación',
             'validationError' => $errors
         ];
@@ -54,13 +55,16 @@ if ($action === 'registrar' && isAdmin()) {
         $usuario['password'] = password_hash($usuario['password'], PASSWORD_BCRYPT);
         try {
             addUser($usuario);
+            unset($usuario['confirmPassword']);
             $data = [
+                'state' => 'success',
                 "title" => 'Usuario agregado exitosamente',
                 'usuario' => $usuario
             ];
         } catch (Exception $e) {
             header('HTTP/1.O 500 Internal Error');
             $data = [
+                'state' => 'error',
                 "title" => "SQL EXCEPCTION: Error en la consulta",
                 "msg" => $e->getMessage()
             ];
@@ -86,6 +90,7 @@ if ($action === 'modificar' && isAuth()) {
         if (count($errors)) {
             header('HTTP/1.O 400 Bad Request');
             $data = [
+                'state' => 'error',
                 'title' => 'Errores de validación',
                 'validationError' => $errors
             ];
@@ -93,12 +98,14 @@ if ($action === 'modificar' && isAuth()) {
             try {
                 updateUser($usuario);
                 $data = [
+                    'state' => 'success',
                     "title" => 'Usuario actualizado exitosamente',
                     'usuario' => $usuario
                 ];
             } catch (Exception $e) {
                 header('HTTP/1.O 500 Internal Error');
                 $data = [
+                    'state' => 'error',
                     "title" => "SQL EXCEPCTION: Error en la consulta",
                     "msg" => $e->getMessage()
                 ];
@@ -106,11 +113,11 @@ if ($action === 'modificar' && isAuth()) {
         }
     } else {
         header('HTTP/1.O 400 Bad Request');
-        $data =
-            [
-                'title' => 'Id de usuario no fue proporcionado',
-                'msg' => 'Es necesario el id de usuario para actualizar el registro especifico.'
-            ];
+        $data = [
+            'state' => 'error',
+            'title' => 'Id de usuario no fue proporcionado',
+            'msg' => 'Es necesario el id de usuario para actualizar el registro especifico.'
+        ];
     }
 
 
@@ -127,6 +134,7 @@ if ($action === 'eliminar' && isAuth()) {
         if (count($errors) > 0) {
             header('HTTP/1.O 400 Bad Request');
             $data = [
+                'state' => 'error',
                 'title' => 'Errores de validación',
                 'validationError' => $errors
             ];
@@ -135,12 +143,14 @@ if ($action === 'eliminar' && isAuth()) {
             try {
                 deleteUser($id_usuario);
                 $data = [
+                    'state' => 'success',
                     "title" => "Registro elimnado exitosamente.",
                     "msg" => "Se ha eliminado el usuario con id: {$id_usuario}"
                 ];
             } catch (Exception $e) {
                 header('HTTP/1.O 500 Internal Error');
                 $data = [
+                    'state' => 'error',
                     "title" => "SQL EXCEPCTION: Error en la consulta",
                     "msg" => $e->getMessage()
                 ];
@@ -148,11 +158,12 @@ if ($action === 'eliminar' && isAuth()) {
         }
     } else {
         header('HTTP/1.O 400 Bad Request');
-        $data =
-            [
-                'title' => 'Id de usuario no fue proporcionado',
-                'msg' => 'Es necesario el id de usuario para eliminar el registro especifico.'
-            ];
+        $data = [
+            'state' => 'error',
+
+            'title' => 'Id de usuario no fue proporcionado',
+            'msg' => 'Es necesario el id de usuario para eliminar el registro especifico.'
+        ];
     }
 
 
@@ -165,27 +176,18 @@ if ($action === 'buscar' && isAuth()) {
     try {
         $usuarios = filterUsers($filter);
         $data = [
+            'state' => 'success',
             'title' => 'Usuarios filtrados con éxito. Cantidad: ' . count($usuarios) . ' usuario(s)',
             'usuarios' => $usuarios
         ];
     } catch (Exception $e) {
         header('HTTP/1.O 500 Internal Error');
         $data = [
+            'state' => 'error',
             "title" => "SQL EXCEPCTION: Error en la consulta",
             "msg" => $e->getMessage()
         ];
     }
 
     echo json_encode($data);
-}
-
-
-if ($action === 'gettoken') {
-    $usuario = [
-        'nombre' => 'Jonas',
-        'apellido' => 'Garcia',
-        'id_rol' => 2
-    ];
-
-    echo json_encode(generateToken($usuario));
 }
