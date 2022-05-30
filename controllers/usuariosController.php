@@ -1,7 +1,7 @@
 <?php
 //Utils
 require_once('../utils/auth.php');
-require_once('../utils/validations.php');
+require_once('../utils/validations/usuarioValidation.php');
 
 //MODELOS
 require_once('../models/usuario.php');
@@ -18,7 +18,7 @@ if (isset($_POST['action'])) {
 // ========== ACCIONES ============================= 
 
 //Obtener todos los usuarios
-if ($action == 'seleccionar') {
+if ($action == 'listar') {
     $data["status"] = 200;
     $data["result"] = getAllUsers();
     echo json_encode($data);
@@ -28,48 +28,6 @@ if ($action == 'seleccionar') {
 if ($action == 'listar_email') {
     $email = $_POST["email"];
     $data["result"] = getUserByEmail($email);
-    echo json_encode($data);
-}
-
-// REGISTAR UN USUARIO
-if ($action === 'registrar' && isAdmin()) {
-
-    $usuario = [
-        'nombre' => isset($_POST['nombre']) ? trim($_POST['nombre']) : '',
-        'apellido' => isset($_POST['apellido']) ? trim($_POST['apellido']) : '',
-        'email' => isset($_POST['email']) ? trim($_POST['email']) : '',
-        'password' => isset($_POST['password']) ? trim($_POST['password']) : '',
-        'confirmPassword' => isset($_POST['confirmPassword']) ? trim($_POST['confirmPassword']) : ''
-    ];
-
-    $errors = usuarioValidation($usuario);
-    if (count($errors)) {
-        header('HTTP/1.O 400 Bad Request');
-        $data = [
-            'state' => 'error',
-            'title' => 'Errores de validación',
-            'validationError' => $errors
-        ];
-    } else {
-        $usuario['id_rol'] = 1;
-        $usuario['password'] = password_hash($usuario['password'], PASSWORD_BCRYPT);
-        try {
-            addUser($usuario);
-            unset($usuario['confirmPassword']);
-            $data = [
-                'state' => 'success',
-                "title" => 'Usuario agregado exitosamente',
-                'usuario' => $usuario
-            ];
-        } catch (Exception $e) {
-            header('HTTP/1.O 500 Internal Error');
-            $data = [
-                'state' => 'error',
-                "title" => "SQL EXCEPCTION: Error en la consulta",
-                "msg" => $e->getMessage()
-            ];
-        }
-    }
     echo json_encode($data);
 }
 
@@ -84,7 +42,7 @@ if ($action === 'modificar' && isAuth()) {
             'id_rol' => isset($_POST['id_rol']) ? trim($_POST['id_rol']) : 1,
         ];
 
-        $errors = usuarioUpdateValidation($usuario);
+        $errors = updateValidation($usuario);
 
         if (count($errors)) {
             header('HTTP/1.O 400 Bad Request');
@@ -128,7 +86,7 @@ if ($action === 'eliminar' && isAuth()) {
     if (isset($_POST['id_usuario'])) {
 
         $id_usuario = trim($_POST['id_usuario']);
-        $errors = usuarioDeleteValidation($id_usuario);
+        $errors = deleteValidation($id_usuario);
 
         if (count($errors) > 0) {
             header('HTTP/1.O 400 Bad Request');
