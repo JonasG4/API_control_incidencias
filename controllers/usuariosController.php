@@ -31,6 +31,55 @@ if ($action == 'listar_email') {
     echo json_encode($data);
 }
 
+// REGISTAR UN USUARIO
+if ($action === 'registrar' && isAdmin()) {
+
+    $usuario = [
+        'nombre' => isset($_POST['nombre']) ? trim($_POST['nombre']) : '',
+        'apellido' => isset($_POST['apellido']) ? trim($_POST['apellido']) : '',
+        'email' => isset($_POST['email']) ? trim($_POST['email']) : '',
+        'password' => isset($_POST['password']) ? trim($_POST['password']) : '',
+        'confirmPassword' => isset($_POST['confirmPassword']) ? trim($_POST['confirmPassword']) : ''
+    ];
+
+    $errors = createValidation($usuario);
+    if (count($errors)) {
+        header('HTTP/1.O 400 Bad Request');
+        $data = [
+            'state' => 'error',
+            'title' => 'Errores de validación',
+            'validationError' => $errors
+        ];
+    } else {
+        $usuario['id_rol'] = 1;
+        $usuario['password'] = password_hash($usuario['password'], PASSWORD_BCRYPT);
+        try {
+
+            //Añadir usuario
+            addUser($usuario);
+
+            //Remover password del array
+            unset($usuario['password']);
+            unset($usuario['confirmPassword']);
+
+            //Retorno de datos
+            $data = [
+                'state' => 'success',
+                "title" => 'Usuario agregado exitosamente',
+                'usuario' => $usuario
+            ];
+        } catch (Exception $e) {
+            header('HTTP/1.O 500 Internal Error');
+            $data = [
+                'state' => 'error',
+                "title" => "SQL EXCEPCTION: Error en la consulta",
+                "msg" => $e->getMessage()
+            ];
+        }
+    }
+    echo json_encode($data);
+}
+
 // MODIFICAR UN USUARIO
 if ($action === 'modificar' && isAuth()) {
     if (isset($_POST['id_usuario'])) {
