@@ -24,6 +24,12 @@ if ($action == 'listar') {
     echo json_encode($data);
 }
 
+if($action == 'get_incident') {
+    $id = $_POST["id"];
+    $data = getIncidentById($id);
+    echo json_encode($data[0]);
+}
+
 
 
 
