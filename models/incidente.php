@@ -45,11 +45,12 @@ function getIncidentById($id)
 {
     $conn = connect();
     $row = array();
-    $searchById = "SELECT * FROM incidencias WHERE id_incidente = '$id'";
+    $searchById = "SELECT incidencias.id_incidente,incidencias.tipo,incidencias.descripcion,incidencias.fecha_ingreso,incidencias.imagen,incidencias.estado,incidencias.nota,usuarios.id_usuario,usuarios.nombre,usuarios.apellido,usuarios.email FROM incidencias INNER JOIN usuarios ON incidencias.id_usuario = usuarios.id_usuario WHERE id_incidente = '$id' ";
     $query = mysqli_query($conn, $searchById);
     $nRow = mysqli_num_rows($query); 
     if ($nRow != 0) {
         while ($incident = mysqli_fetch_array($query)) {
+
             $jsonRow = array();
             //asignar
             
@@ -58,7 +59,12 @@ function getIncidentById($id)
             $descripcion = $incident['descripcion'];
             $fecha_ingreso = $incident['fecha_ingreso'];
             $imagen = $incident['imagen'];
-            $id_usuario = $incident['id_usuario'];
+            $usuario = [
+                'id_usuario' => $incident['id_usuario'],
+                'nombre' => $incident['nombre'],
+                'apellido' => $incident['apellido'],
+                'email' => $incident['email']
+            ];
             $estado = $incident['estado'];
             $nota = $incident['nota'];
 
@@ -68,7 +74,7 @@ function getIncidentById($id)
             $jsonRow['descripcion'] = $descripcion;
             $jsonRow['fecha_ingreso'] = $fecha_ingreso;
             $jsonRow['imagen'] = $imagen;
-            $jsonRow['id_usuario'] = $id_usuario;
+            $jsonRow['usuario'] = $usuario;
             $jsonRow['estado'] = $estado;
             $jsonRow['nota'] = $nota;
             $row[] = $jsonRow;
