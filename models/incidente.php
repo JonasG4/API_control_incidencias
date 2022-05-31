@@ -61,6 +61,7 @@ function getIncidentById($id)
             $id_usuario = $incident['id_usuario'];
             $estado = $incident['estado'];
             $nota = $incident['nota'];
+
             //Asignar 
             $jsonRow['id_incidente'] = $id_incidente;
             $jsonRow['tipo'] = $tipo;
@@ -76,7 +77,6 @@ function getIncidentById($id)
     } else {
         header('HTTP/1.O 404 Not Found');
         $row = 'Incidente no encontrado';
-        return $row;
     }
     disconnect($conn);
 }
@@ -106,6 +106,23 @@ function updateIncident($incidente)
 
     mysqli_query($conn, $query);
 
+    disconnect($conn);
+    return true;
+}
+
+function updateIncidentAdmin($incidente)
+{
+    $incidente = (object) $incidente;
+    $conn = connect();
+
+    $query = "UPDATE incidencias SET estado='$incidente->estado', nota='$incidente->nota' WHERE id_incidente='$incidente->id_incidente'";
+
+    try {
+        mysqli_query($conn, $query);
+    }catch (Exception $e) {
+        echo "Error al actualizar " . $e->getMessage();
+        return false;
+    }
     disconnect($conn);
     return true;
 }

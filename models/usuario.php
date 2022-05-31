@@ -13,7 +13,6 @@ function getAllUsers() //1
 
   if($nRow != 0) {
     while($users = mysqli_fetch_array($query)) {
-     print_r($users);
       $jsonRow = array();
       $id_user = $users["id_usuario"];
       $name = $users["nombre"];
