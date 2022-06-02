@@ -175,7 +175,7 @@ if ($action === 'eliminar' && isAuth()) {
 
     echo json_encode($data);
 }
-
+//FILTRO 
 if ($action === 'buscar' && isAuth()) {
     $filter =  trim($_POST['filter']);
 
