@@ -143,3 +143,19 @@ function getIncidentsByUsers($id_usuario)
         return $row;
     }
 }
+function getIncidentById($id_incidente)
+{
+    $conn = connect();
+
+    $query = "SELECT tipo, descripcion, imagen, id_usuario, estado, nota FROM incidentes WHERE id_incidente='$id_incidente'";
+
+    try {
+        $row = mysqli_query($conn, $query);
+        $result = mysqli_fetch_assoc($row);
+    } catch (Exception $e) {
+        $result = "Error: " . $e->getMessage();
+    }
+
+    disconnect($conn);
+    return $result;
+}
