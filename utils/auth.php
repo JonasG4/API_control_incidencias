@@ -18,7 +18,7 @@ function isAdmin()
       $algorithm = JWTConfig()->algorithm;
       try {
          $data = JWT::decode($token, new Key($key, $algorithm));
-         if ($data->usuario->id_rol === 2) {
+         if ($data->usuario->id_rol == 2) {
             return true;
          } else {
             header('HTTP/1.O 401 Unauthorized');

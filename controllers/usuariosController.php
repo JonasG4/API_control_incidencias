@@ -18,7 +18,7 @@ if (isset($_POST['action'])) {
 // ========== ACCIONES ============================= 
 
 //Obtener todos los usuarios
-if ($action == 'listar') {
+if ($action == 'list') {
     $data["status"] = 200;
     $data["result"] = getAllUsers();
     echo json_encode($data);
@@ -32,7 +32,7 @@ if ($action == 'listar_email') {
 }
 
 // REGISTAR UN USUARIO
-if ($action === 'registrar' && isAdmin()) {
+if ($action === 'create' && isAdmin()) {
 
     $usuario = [
         'nombre' => isset($_POST['nombre']) ? trim($_POST['nombre']) : '',
@@ -81,7 +81,7 @@ if ($action === 'registrar' && isAdmin()) {
 }
 
 // MODIFICAR UN USUARIO
-if ($action === 'modificar' && isAuth()) {
+if ($action === 'update' && isAuth()) {
     if (isset($_POST['id_usuario'])) {
         $usuario = [
             'id_usuario' => trim($_POST['id_usuario']),
@@ -131,7 +131,7 @@ if ($action === 'modificar' && isAuth()) {
 }
 
 // ELIMINAR UN USUARIO
-if ($action === 'eliminar' && isAuth()) {
+if ($action === 'delete' && isAuth()) {
     if (isset($_POST['id_usuario'])) {
 
         $id_usuario = trim($_POST['id_usuario']);
@@ -176,7 +176,7 @@ if ($action === 'eliminar' && isAuth()) {
     echo json_encode($data);
 }
 
-if ($action === 'buscar' && isAuth()) {
+if ($action === 'search' && isAuth()) {
     $filter =  trim($_POST['filter']);
 
     try {

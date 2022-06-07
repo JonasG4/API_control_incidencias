@@ -18,30 +18,23 @@ if (isset($_POST['action'])) {
 
 // ========== ACCIONES ============================= 
 
-if ($action == 'listar') {
+if ($action == 'list') {
     $data["status"] = 200;
     $data["incidentes"] = getAllIncidents();
     echo json_encode($data);
 }
 
-
-
-
 //Create
+if ($action == 'create' && isAuth()) {
 
-//UPDATE -- usuario
-// tipo, descripcion, imagen
+    $_FILES['imagen'];
 
+    $incidente = [
+        'tipo' => isset($_POST['tipo']) ? trim($_POST['tipo']) : '',
+        'descripcion' => isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '',
+        'fecha_ingreso' => isset($_POST['fecha_ingreso']) ? trim($_POST['fecha_ingreso']) : '',
+        'i'
 
+    ];
 
-
-
-//UPDATE -- ADMIN
-//Estado, nota
-
-//DELETE
-
-//Obtener un solo incidente
-
-//Filter 
-//Tipo, estado, id_usuario
+}
