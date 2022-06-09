@@ -84,6 +84,33 @@ function updateValidation($usuario)
     return $errors;
 }
 
+function resetPasswordValidation($credenciales){
+    $errors = [];
+
+    $oldPassword = $credenciales['oldPassword'];
+    $newPassword = $credenciales['newPassword'];
+    $confirmPassword = $credenciales['confirmPassword'];
+
+    $usuario = (array) getUserById($credenciales['id_usuario']);
+    $usuarioPassword = getUserByEmail($usuario['email'])['password'];
+    $isUserExists = count($usuario) < 1;
+
+    if ($isUserExists) {
+        $errors = [
+            "id_usuario" => "No existe ningun usuario con el id: {$credenciales['id_usuario']}"
+        ];
+    }
+
+    if(!password_hash($oldPassword, $usuarioPassword)){
+        $errors = [
+            "id_usuario" => "La contrase"
+        ]
+    }
+
+
+    return $errors;
+}
+
 function deleteValidation($id_usuario)
 {
     $errors = [];

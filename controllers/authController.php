@@ -32,11 +32,13 @@ if ($action === 'login') {
     } else {
         try {
             $usuario = getUserByEmail($crendenciales['email'])[0];
+            unset($usuario['password']);
             $token = generateToken($usuario);
 
             $data = [
                 'state' => 'success',
                 'title' => 'Bienvenido, ' . $usuario['nombre'] . ' ' . $usuario['apellido'] . '!',
+                'usuario' => $usuario,
                 'token' => $token
             ];
         } catch (Exception $e) {

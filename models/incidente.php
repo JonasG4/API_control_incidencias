@@ -41,63 +41,25 @@ function getAllIncidents()
     }
 }
 
-function getIncidentById($id)
-{
-    $conn = connect();
-    $row = array();
-    $searchById = "SELECT incidencias.id_incidente,incidencias.tipo,incidencias.descripcion,incidencias.fecha_ingreso,incidencias.imagen,incidencias.estado,incidencias.nota,usuarios.id_usuario,usuarios.nombre,usuarios.apellido,usuarios.email FROM incidencias INNER JOIN usuarios ON incidencias.id_usuario = usuarios.id_usuario WHERE id_incidente = '$id' ";
-    $query = mysqli_query($conn, $searchById);
-    $nRow = mysqli_num_rows($query); 
-    if ($nRow != 0) {
-        while ($incident = mysqli_fetch_array($query)) {
-
-            $jsonRow = array();
-            //asignar
-            
-            $id_incidente = $incident['id_incidente'];
-            $tipo = $incident['tipo'];
-            $descripcion = $incident['descripcion'];
-            $fecha_ingreso = $incident['fecha_ingreso'];
-            $imagen = $incident['imagen'];
-            $usuario = [
-                'id_usuario' => $incident['id_usuario'],
-                'nombre' => $incident['nombre'],
-                'apellido' => $incident['apellido'],
-                'email' => $incident['email']
-            ];
-            $estado = $incident['estado'];
-            $nota = $incident['nota'];
-
-            //Asignar 
-            $jsonRow['id_incidente'] = $id_incidente;
-            $jsonRow['tipo'] = $tipo;
-            $jsonRow['descripcion'] = $descripcion;
-            $jsonRow['fecha_ingreso'] = $fecha_ingreso;
-            $jsonRow['imagen'] = $imagen;
-            $jsonRow['usuario'] = $usuario;
-            $jsonRow['estado'] = $estado;
-            $jsonRow['nota'] = $nota;
-            $row[] = $jsonRow;
-        }
-        return array_values($row);
-    } else {
-        header('HTTP/1.O 404 Not Found');
-        $row = 'Incidente no encontrado';
-    }
-    disconnect($conn);
-}
-
 function addNewIncident($incidente)
 {
     $incidente = (object) $incidente;
 
     $conn = connect();
-
-    $query = "INSERT INTO incidentes (id_incidente, tipo, descripcion, fecha_ingreso, imagen, id_usuario, estado, nota)
-     VALUES('$incidente->id_incidente', '$incidente->tipo', '$incidente->descripcion', '$incidente->fecha_ingreso', '$incidente->imagen', '$incidente->id_usuario', '$incidente->estado', '$incidente->nota')";
-
-    mysqli_query($conn, $query);
-
+    
+    $query = "INSERT INTO incidentes (tipo, descripcion, fecha_ingreso, imagen, id_usuario, estado)
+     VALUES('$incidente->tipo', '$incidente->descripcion', '$incidente->fecha_ingreso', '$incidente->imagen', '$incidente->id_usuario', '$incidente->estado')";
+    
+    
+    // $query = "INSERT INTO incidentes (tipo, descripcion, fecha_ingreso, imagen, id_usuario, estado)
+    //  VALUES('cucha weon', 'A la berha', '2018-07-12 00:00:32', '$/public/img/incidentes/prueba.jpg', '4', '1')";
+    
+    try {
+        mysqli_query($conn, $query);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
+    
     disconnect($conn);
     return true;
 }
@@ -108,7 +70,21 @@ function updateIncident($incidente)
 
     $conn = connect();
 
-    $query = "UPDATE incidentes SET tipo='$incidente->tipo', descripcion='$incidente->descripcion', imagen='$incidente->imagen' WHERE id_incidente='$incidente->id_incidente'";
+    $query = "UPDATE incidentes SET tipo='$incidente->tipo', descripcion='$incidente->descripcion' WHERE id_incidente='$incidente->id_incidente'";
+
+    mysqli_query($conn, $query);
+
+    disconnect($conn);
+    return true;
+}
+
+function updateImagenIncident($incidente)
+{
+    $incidente = (object) $incidente;
+
+    $conn = connect();
+
+    $query = "UPDATE incidentes SET imagen='$incidente->imagen' WHERE id_incidente='$incidente->id_incidente'";
 
     mysqli_query($conn, $query);
 
@@ -125,7 +101,7 @@ function updateIncidentAdmin($incidente)
 
     try {
         mysqli_query($conn, $query);
-    }catch (Exception $e) {
+    } catch (Exception $e) {
         echo "Error al actualizar " . $e->getMessage();
         return false;
     }
@@ -211,6 +187,7 @@ function getIncidentsByUsers($id_usuario)
         return $row;
     }
 }
+
 function getIncidentById($id_incidente)
 {
     $conn = connect();
@@ -227,3 +204,52 @@ function getIncidentById($id_incidente)
     disconnect($conn);
     return $result;
 }
+
+function filterIncidents($filter)
+{
+
+    $conn = connect();
+    $row = array();
+    $query = "SELECT id_incidente, tipo, descripcion, fecha_ingreso, id_usuario, imagen, estado, nota FROM incidentes WHERE (tipo LIKE '%$filter%' 
+    OR descripcion LIKE '%$filter%' OR nota LIKE '%$filter%') ORDER BY nombre ASC";
+
+    $response = mysqli_query($conn, $query);
+    $nRow = mysqli_num_rows($response);
+
+    if ($nRow != 0) {
+        while ($incidents = mysqli_fetch_array($response)) {
+            $jsonRow = array();
+            //Asignar 
+            $jsonRow['id_incidente'] = $incidents['id_incidente'];
+            $jsonRow['tipo'] = $incidents['tipo'];
+            $jsonRow['descripcion'] = $incidents['descripcion'];
+            $jsonRow['fecha_ingreso'] = $incidents['fecha_ingreso'];
+            $jsonRow['imagen'] = $incidents['imagen'];
+            $jsonRow['id_usuario'] = $incidents['id_usuario'];
+            $jsonRow['estado'] = $incidents['estado'];
+            $jsonRow['nota'] = $incidents['nota'];
+            $row = $jsonRow;
+        }
+    }
+    disconnect($conn);
+    return array_values($row);
+}
+
+function getIncidenteImagenById($id_incidente){
+    $conn = connect();
+
+    $query = "SELECT imagen FROM incidentes WHERE id_incidente='$id_incidente'";
+
+    try {
+        $row = mysqli_query($conn, $query);
+        $result = mysqli_fetch_assoc($row);
+    } catch (Exception $e) {
+        $result = "Error: " . $e->getMessage();
+    }
+
+    disconnect($conn);
+    return $result;
+}
+
+
+
