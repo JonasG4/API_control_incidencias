@@ -46,12 +46,20 @@ function addNewIncident($incidente)
     $incidente = (object) $incidente;
 
     $conn = connect();
-
-    $query = "INSERT INTO incidentes (id_incidente, tipo, descripcion, fecha_ingreso, imagen, id_usuario, estado, nota)
-     VALUES('$incidente->id_incidente', '$incidente->tipo', '$incidente->descripcion', '$incidente->fecha_ingreso', '$incidente->imagen', '$incidente->id_usuario', '$incidente->estado', '$incidente->nota')";
-
-    mysqli_query($conn, $query);
-
+    
+    $query = "INSERT INTO incidentes (tipo, descripcion, fecha_ingreso, imagen, id_usuario, estado)
+     VALUES('$incidente->tipo', '$incidente->descripcion', '$incidente->fecha_ingreso', '$incidente->imagen', '$incidente->id_usuario', '$incidente->estado')";
+    
+    
+    // $query = "INSERT INTO incidentes (tipo, descripcion, fecha_ingreso, imagen, id_usuario, estado)
+    //  VALUES('cucha weon', 'A la berha', '2018-07-12 00:00:32', '$/public/img/incidentes/prueba.jpg', '4', '1')";
+    
+    try {
+        mysqli_query($conn, $query);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
+    
     disconnect($conn);
     return true;
 }
@@ -62,7 +70,21 @@ function updateIncident($incidente)
 
     $conn = connect();
 
-    $query = "UPDATE incidentes SET tipo='$incidente->tipo', descripcion='$incidente->descripcion', imagen='$incidente->imagen' WHERE id_incidente='$incidente->id_incidente'";
+    $query = "UPDATE incidentes SET tipo='$incidente->tipo', descripcion='$incidente->descripcion' WHERE id_incidente='$incidente->id_incidente'";
+
+    mysqli_query($conn, $query);
+
+    disconnect($conn);
+    return true;
+}
+
+function updateImagenIncident($incidente)
+{
+    $incidente = (object) $incidente;
+
+    $conn = connect();
+
+    $query = "UPDATE incidentes SET imagen='$incidente->imagen' WHERE id_incidente='$incidente->id_incidente'";
 
     mysqli_query($conn, $query);
 
@@ -212,3 +234,22 @@ function filterIncidents($filter)
     disconnect($conn);
     return array_values($row);
 }
+
+function getIncidenteImagenById($id_incidente){
+    $conn = connect();
+
+    $query = "SELECT imagen FROM incidentes WHERE id_incidente='$id_incidente'";
+
+    try {
+        $row = mysqli_query($conn, $query);
+        $result = mysqli_fetch_assoc($row);
+    } catch (Exception $e) {
+        $result = "Error: " . $e->getMessage();
+    }
+
+    disconnect($conn);
+    return $result;
+}
+
+
+

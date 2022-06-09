@@ -176,6 +176,52 @@ if ($action === 'delete' && isAuth()) {
     echo json_encode($data);
 }
 
+if ($action === 'reset_password') {
+    if (isset($_POST['id_usuario'])) {
+        $credentials = [
+            'id_usuario' => isset($_POST['id_usuario']) ? $_POST['id_usuario'] : 0,
+            'oldPassword' => isset($_POST['oldPassword']) ? trim($_POST['oldPassword']) : "",
+            'newPassword' => isset($_POST['newPassword']) ? trim($_POST['newPassword']) : "",
+            'confirmPassword' => isset($_POST['newPassword']) ? trim($_POST['newPassword']) : ""
+        ];
+
+        $errors = resetPasswordValidation($usuario);
+
+        if (count($errors)) {
+            header('HTTP/1.O 400 Bad Request');
+            $data = [
+                'state' => 'error',
+                'title' => 'Errores de validación',
+                'validationError' => $errors
+            ];
+        } else {
+            try {
+                updateUser($usuario);
+                $data = [
+                    'state' => 'success',
+                    "title" => 'Usuario actualizado exitosamente',
+                    'usuario' => $usuario
+                ];
+            } catch (Exception $e) {
+                header('HTTP/1.O 500 Internal Error');
+                $data = [
+                    'state' => 'error',
+                    "title" => "SQL EXCEPCTION: Error en la consulta",
+                    "msg" => $e->getMessage()
+                ];
+            }
+        }
+    } else {
+        header('HTTP/1.O 400 Bad Request');
+        $data = [
+            'state' => 'error',
+            'title' => 'Id de usuario no fue proporcionado',
+            'msg' => 'Es necesario el id de usuario para actualizar el registro especifico.'
+        ];
+    }
+    echo json_encode($data);
+}
+
 if ($action === 'search' && isAuth()) {
     $filter =  trim($_POST['filter']);
 
