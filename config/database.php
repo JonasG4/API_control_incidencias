@@ -3,11 +3,21 @@
 function connect()
 {
 
+    // LOCALHOST
+
+    // $database = [
+    //     "server" => 'localhost',
+    //     "username" => 'root',
+    //     "password" => '',
+    //     "db_name" => 'dbsys_incidencias'
+    // ];
+
+    //  HEROKU REMOTE 
     $database = [
-        "server" => 'localhost',
-        "username" => 'root',
-        "password" => '',
-        "db_name" => 'dbsys_incidencias'
+        "server" => 'us-cdbr-east-05.cleardb.net',
+        "username" => 'b1645921b59209',
+        "password" => '6ce747a7',
+        "db_name" => 'heroku_1facf0ac051c124'
     ];
 
     $conn = mysqli_connect($database['server'], $database['username'], $database['password'], $database['db_name']);

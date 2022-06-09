@@ -104,7 +104,7 @@ function resetPasswordValidation($credenciales){
     if(!password_hash($oldPassword, $usuarioPassword)){
         $errors = [
             "id_usuario" => "La contrase"
-        ]
+        ];
     }
 
 
