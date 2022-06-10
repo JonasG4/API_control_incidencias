@@ -132,7 +132,7 @@ if ($action === 'update_imagen') {
     $imagenName = isset($_FILES['imagen']) ? $_FILES['imagen']['name'] : '';
     $oldImagen = getIncidentById($incidente['id_incidente']);
     $isImagenExists = file_exists(__DIR__ . '/..' . $oldImagen['imagen']);
-    
+
     if ($isImagenExists) {
         unlink(__DIR__ . '/..' . $oldImagen['imagen']);
     }
@@ -155,7 +155,7 @@ if ($action === 'update_imagen') {
         ];
     } else {
         try {
-            
+
             $path = __DIR__ . "/.." . $incidente['imagen'];
             move_uploaded_file($_FILES['imagen']['tmp_name'], $path);
             //Actualizar imagen incidente
@@ -241,8 +241,12 @@ if ($action === 'delete' && isAuth()) {
                 'validationError' => $errors
             ];
         } else {
-
             try {
+                $oldImagen = getIncidentById($incidente['id_incidente']);
+                $isImagenExists = file_exists(__DIR__ . '/..' . $oldImagen['imagen']);
+                if ($isImagenExists) {
+                    unlink(__DIR__ . '/..' . $oldImagen['imagen']);
+                }
                 deleteIncident($id_incidente);
                 $data = [
                     'state' => 'success',

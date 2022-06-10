@@ -1,5 +1,7 @@
 Options +FollowSymLinks
 RewriteEngine On
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 RewriteRule ^api/v1/usuarios$ controllers/usuarioscontroller.php
 RewriteRule ^api/v1/auth$ controllers/authcontroller.php
 RewriteRule ^api/v1/incidentes$ controllers/incidentescontroller.php

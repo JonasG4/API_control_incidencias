@@ -84,12 +84,52 @@ function updateValidation($usuario)
     return $errors;
 }
 
-function resetPasswordValidation($credenciales){
+function resetPasswordValidation($credenciales)
+{
+    $errors = [];
+
+    $newPassword = $credenciales['newPassword'];
+    $confirmPassword = $credenciales['confirmPassword'];
+    //regex
+    $isUppercase = preg_match('@[A-Z]@', $newPassword);
+    $isLowercase = preg_match('@[a-z]@', $newPassword);
+    $isNumber    = preg_match('@[0-9]@', $newPassword);
+
+
+    $usuario = (array) getUserById($credenciales['id_usuario']);
+    $isUserExists = count($usuario) < 1;
+
+    if ($isUserExists) {
+        $errors = [
+            "id_usuario" => "No existe ningun usuario con el id: {$credenciales['id_usuario']}"
+        ];
+    }
+    //validar campo password
+    if (!$isUppercase || !$isLowercase || !$isNumber || strlen($newPassword) < 6) {
+        $errors['newPassword'] = "La contraseña debe tener al menos 6 carácteres, 1 letra mayúscula, 1 letra minúscula y un número.";
+    }
+
+    if ($newPassword !== $confirmPassword) {
+        $errors["confirmPassword"] = "Las contraseñas no coinciden.";
+    }
+
+
+
+
+    return $errors;
+}
+function changePasswordValidation($credenciales)
+{
     $errors = [];
 
     $oldPassword = $credenciales['oldPassword'];
     $newPassword = $credenciales['newPassword'];
     $confirmPassword = $credenciales['confirmPassword'];
+    //regex
+    $isUppercase = preg_match('@[A-Z]@', $newPassword);
+    $isLowercase = preg_match('@[a-z]@', $newPassword);
+    $isNumber    = preg_match('@[0-9]@', $newPassword);
+
 
     $usuario = (array) getUserById($credenciales['id_usuario']);
     $usuarioPassword = getUserByEmail($usuario['email'])['password'];
@@ -101,11 +141,22 @@ function resetPasswordValidation($credenciales){
         ];
     }
 
-    if(!password_hash($oldPassword, $usuarioPassword)){
+    if (!password_hash($oldPassword, $usuarioPassword)) {
         $errors = [
-            "id_usuario" => "La contrase"
+            "oldPassword" => "La contraseña es incorrecta. Vuelva a intentarlo."
         ];
     }
+
+    //validar campo password
+    if (!$isUppercase || !$isLowercase || !$isNumber || strlen($newPassword) < 6) {
+        $errors['newPassword'] = "La contraseña debe tener al menos 6 carácteres, 1 letra mayúscula, 1 letra minúscula y un número.";
+    }
+
+    if ($newPassword !== $confirmPassword) {
+        $errors["confirmPassword"] = "Las contraseñas no coinciden.";
+    }
+
+
 
 
     return $errors;
