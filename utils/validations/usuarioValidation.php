@@ -104,6 +104,7 @@ function resetPasswordValidation($credenciales)
             "id_usuario" => "No existe ningun usuario con el id: {$credenciales['id_usuario']}"
         ];
     }
+    
     //validar campo password
     if (!$isUppercase || !$isLowercase || !$isNumber || strlen($newPassword) < 6) {
         $errors['newPassword'] = "La contraseña debe tener al menos 6 carácteres, 1 letra mayúscula, 1 letra minúscula y un número.";
